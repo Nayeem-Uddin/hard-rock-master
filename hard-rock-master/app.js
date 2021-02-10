@@ -1,14 +1,31 @@
-const searchSongs = async() =>{
+//load the song from API using async ,await way
+// const searchSongs = async() =>{
+//     const searchField = document.getElementById('input-field').value;
+//     //console.log(searchField);
+//     document.getElementById('input-field').value = '';
+//     const url = `https://api.lyrics.ovh/suggest/${searchField}`;
+//     //console.log(url);
+//     //load data
+//     const res =await fetch(url)
+//     const data =await res.json()
+//     displaySongs(data.data)
+// }
+
+//load the song from API
+function searchSongs() {
     const searchField = document.getElementById('input-field').value;
     //console.log(searchField);
     document.getElementById('input-field').value = '';
     const url = `https://api.lyrics.ovh/suggest/${searchField}`;
     //console.log(url);
     //load data
-    const res =await fetch(url)
-    const data =await res.json()
-    displaySongs(data.data)
+    fetch(url)
+        .then(res => res.json())
+        .then(data => displaySongs(data.data))
+        .catch(error => displayError('something went wrong !!! pleaser try again later'))
 }
+
+
 
 const displaySongs = songs => {
     const songContainer = document.getElementById('song-container');
@@ -44,11 +61,15 @@ const displaySongs = songs => {
 
 const getLyrics = async (artist, title) => {
     const url = `https://api.lyrics.ovh/v1/${artist}/${title}`;
-    const res = await fetch(url)
+    try{
+        const res =await fetch(url)
     const data =await res.json()
     displayLyrics(data.lyrics)
+    }
+    catch{
+        displayError('I failed to reload your lyrics !!! please try again later')
+    }  
 }
-
 
 //get the lyrics
 // const getLyrics = (artist,title) =>{
@@ -62,4 +83,8 @@ const displayLyrics = lyrics => {
     //console.log(lyrics);
     const lyricsDiv = document.getElementById('single-lyrics');
     lyricsDiv.innerText = lyrics;
+}
+const displayError = error =>{
+    const showError = document.getElementById('error');
+    showError.innerText = error;
 }
