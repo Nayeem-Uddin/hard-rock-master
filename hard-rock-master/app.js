@@ -1,9 +1,10 @@
 function searchSongs() {
     const searchField = document.getElementById('input-field').value;
     //console.log(searchField);
-    //searchField.value = '';
+    document.getElementById('input-field').value = '';
     const url = `https://api.lyrics.ovh/suggest/${searchField}`;
     //console.log(url);
+    //load data
     fetch(url)
         .then(res => res.json())
         .then(data => displaySongs(data.data))
@@ -11,7 +12,9 @@ function searchSongs() {
 
 const displaySongs = songs => {
     const songContainer = document.getElementById('song-container');
-    console.log(songs);
+    //clear the history of searched song
+    songContainer.innerHTML = '';
+    // console.log(songs);
     songs.forEach(song => {
 
         const songDiv = document.createElement('div');
@@ -26,7 +29,7 @@ const displaySongs = songs => {
                     </audio>
                 </div>
                 <div class="col-md-3 text-md-right text-center">
-                    <button class="btn btn-success">Get Lyrics</button>
+                    <button onclick="getLyrics('${song.artist.name}','${song.title}')" class="btn btn-success">Get Lyrics</button>
                 </div>
         `;
         songContainer.appendChild(songDiv);
@@ -36,4 +39,18 @@ const displaySongs = songs => {
         // console.log(song.artist.name);
         // console.log(song.album.title);
     });
+}
+
+// get the lyrics
+const getLyrics = (artist,title) =>{
+    const url = `https://api.lyrics.ovh/v1/${artist}/${title}`;
+    fetch(url)
+        .then(res => res.json())
+        .then(data => displayLyrics(data.lyrics))
+}
+
+const displayLyrics = lyrics => {
+    //console.log(lyrics);
+    const lyricsDiv = document.getElementById('single-lyrics');
+    lyricsDiv.innerText = lyrics;
 }
